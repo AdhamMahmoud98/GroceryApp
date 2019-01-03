@@ -1,30 +1,43 @@
 package com.GroceryApp;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import com.GroceryApp.entities.ProductItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import android.view.View;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+import com.google.firebase.database.ValueEventListener;
+import java.util.ArrayList;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    FirebaseDatabase database;
+    ArrayList<ProductItem> productItems = new ArrayList<ProductItem>();
+    RecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        database = FirebaseDatabase.getInstance();
+
+        initializeViews();
+        getProducts();
+    }
+
+    public void initializeViews(){
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -48,8 +61,33 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        RecyclerView rvItems = findViewById(R.id.rvItems);
+        adapter = new RecyclerViewAdapter(productItems,this);
+        rvItems.setAdapter(adapter);
     }
 
+    public void getProducts(){
+        database.getReference("products").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                productItems.clear();
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    productItems.add(new ProductItem(childDataSnapshot.getKey() ,childDataSnapshot.child("name").getValue().toString() , childDataSnapshot.child("description").getValue().toString()));
+//                    Log.v("TAAAG",""+ childDataSnapshot.getKey()); //displays the key for the node
+//                    Log.v("TAAAG",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //region
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
