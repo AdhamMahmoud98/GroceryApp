@@ -1,31 +1,26 @@
 package com.GroceryApp;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.GroceryApp.entities.ProductItem;
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class RecyclerViewAdapter extends RecyclerView.ViewHolder {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<ProductItem> productItems = new ArrayList<>();
     private Context mContext;
 
-    public RecyclerViewAdapter( View itemView, ArrayList<ProductItem> productItems, Context mContext) {
-        super(itemView);
+    public RecyclerViewAdapter(ArrayList<ProductItem> productItems, Context mContext) {
         this.productItems = productItems;
         this.mContext = mContext;
     }
@@ -45,7 +40,16 @@ public class RecyclerViewAdapter extends RecyclerView.ViewHolder {
     }
 
 
-    public void onBindViewHolder( ViewHolder viewHolder, final int position) {
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.itemlist , parent,false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
        ProductItem productItem = productItems.get(position);
         viewHolder.itemName.setText(productItem.getName());
         viewHolder.itemDescription.setText(productItem.getDescription());
