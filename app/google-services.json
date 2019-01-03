@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1096813061661",
+    "firebase_url": "https://adham-722cb.firebaseio.com",
+    "project_id": "adham-722cb",
+    "storage_bucket": "adham-722cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096813061661:android:544087258a31ba79",
+        "android_client_info": {
+          "package_name": "com.GroceryApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096813061661-1e8koob15obalkovuohs8273da9r436v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.GroceryApp",
+            "certificate_hash": "fd60ff568811f808cffbe6b7fedbbd478018dc3f"
+          }
+        },
+        {
+          "client_id": "1096813061661-sltqp3afvrl3tro40op0a2t8rpaoger9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiKk3Bb-0mkOY3Vartyf87cSBzjSEnL5g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096813061661-sltqp3afvrl3tro40op0a2t8rpaoger9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
