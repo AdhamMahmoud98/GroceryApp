@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity
                 DatabaseReference myRef = database.getReference("products").push();
 
                 myRef.setValue(new ProductItem(0 , "name" , "desc"));
+
+
             }
         });
 
