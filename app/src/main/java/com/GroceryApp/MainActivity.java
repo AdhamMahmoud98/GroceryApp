@@ -34,8 +34,7 @@ public class MainActivity extends AppCompatActivity
                 // Write a message to the database
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("products").push();
-
-                myRef.setValue(new ProductItem(0 , "name" , "desc"));
+                myRef.setValue(new ProductItem(myRef.getKey() ,"name" , "desc"));
             }
         });
 
