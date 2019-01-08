@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1096813061661-1e8koob15obalkovuohs8273da9r436v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.GroceryApp",
+            "certificate_hash": "fd60ff568811f808cffbe6b7fedbbd478018dc3f"
+          }
+        },
+        {
           "client_id": "1096813061661-sltqp3afvrl3tro40op0a2t8rpaoger9.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096813061661-sltqp3afvrl3tro40op0a2t8rpaoger9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
