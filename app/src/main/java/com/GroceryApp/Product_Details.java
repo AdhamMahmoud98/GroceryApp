@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.GroceryApp.entities.ProductItem;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +29,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -56,10 +62,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class Product_Details extends AppCompatActivity {
-
+    FirebaseStorage storage;
+    StorageReference storageReference ;
     FirebaseDatabase database;
     private ImageView imageview;
-
+   String downloadURl;
+    private Uri filePath;
     private static final String IMAGE_DIRECTORY = "/demonuts";
     private int GALLERY = 1, CAMERA = 2;
 
@@ -70,14 +78,15 @@ public class Product_Details extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         // storageReference = storage.getReference();
-
+         storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
         Button button = (Button) findViewById(R.id.submitButton);
         EditText etName = (EditText) findViewById(R.id.etName);
         EditText etDescription = (EditText) findViewById(R.id.etDescription);
         button.setOnClickListener(view -> {
             DatabaseReference myRef = database.getReference("products").push();
-            myRef.setValue(new ProductItem(myRef.getKey(), etName.getText().toString(), etDescription.getText().toString()));
-
+          //  myRef.setValue(new ProductItem(myRef.getKey(), etName.getText().toString(), etDescription.getText().toString(), downloadURl));
+            uploadImage(myRef,myRef.getKey() , new ProductItem(myRef.getKey(), etName.getText().toString(), etDescription.getText().toString(), ""));
         });
 
         Button bChooseImage = (Button) findViewById(R.id.bChooseImage);
@@ -91,6 +100,48 @@ public class Product_Details extends AppCompatActivity {
 
     }
 
+    private void uploadImage(DatabaseReference myRef, String key, ProductItem productItem) {
+
+        if(filePath != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            StorageReference ref = storageReference.child("images/"+ key);
+            ref.putFile(filePath)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            Toast.makeText(Product_Details.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    productItem.setDownlloadUrl(uri.toString());
+                                    myRef.setValue(productItem);
+                                }
+                            });
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(Product_Details.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    });
+        }
+    }
     private void showPictureDialog() {
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
         pictureDialog.setTitle("Select Action");
@@ -135,8 +186,10 @@ public class Product_Details extends AppCompatActivity {
         }
         if (requestCode == GALLERY) {
             if (data != null) {
+                filePath = data.getData();
                 Uri contentURI = data.getData();
                 try {
+                    filePath = data.getData();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
                     String path = saveImage(bitmap);
                     Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show();
@@ -149,8 +202,10 @@ public class Product_Details extends AppCompatActivity {
             }
 
         } else if (requestCode == CAMERA) {
+
             Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
             imageview.setImageBitmap(thumbnail);
+            filePath = data.getData();
             saveImage(thumbnail);
             Toast.makeText(this, "Image Saved!", Toast.LENGTH_SHORT).show();
         }

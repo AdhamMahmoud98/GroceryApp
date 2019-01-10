@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                productItems.clear();
                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-                    productItems.add(new ProductItem(childDataSnapshot.getKey() ,childDataSnapshot.child("name").getValue().toString() , childDataSnapshot.child("description").getValue().toString()));
+                    productItems.add(new ProductItem(childDataSnapshot.getKey() ,childDataSnapshot.child("name").getValue().toString() , childDataSnapshot.child("description").getValue().toString(),null));
 //                    Log.v("TAAAG",""+ childDataSnapshot.getKey()); //displays the key for the node
 //                    Log.v("TAAAG",""+ childDataSnapshot.child("name").getValue());   //gives the value for given keyname
                 }

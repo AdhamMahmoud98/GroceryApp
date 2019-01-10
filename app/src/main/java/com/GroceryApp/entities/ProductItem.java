@@ -4,11 +4,21 @@ public class ProductItem {
     private String id;
     private String name;
     private String description;
+    private String downlloadUrl;
 
-    public ProductItem(String id, String name, String description) {
+    public String getDownlloadUrl() {
+        return downlloadUrl;
+    }
+
+    public void setDownlloadUrl(String downlloadUrl) {
+        this.downlloadUrl = downlloadUrl;
+    }
+
+    public ProductItem(String id, String name, String description, String downloadUrl) {
         this.name = name;
         this.id = id;
         this.description = description;
+        this.downlloadUrl = downloadUrl;
     }
 
     public String getId() {
